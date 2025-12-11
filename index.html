@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TalentAI – Decentralized Creator-Brand Matching</title>
+    <style>
+        /* ===== VARIABLES ===== */
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #5b21b6;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #111827;
+            --darker: #0a0f1c;
+            --light: #f9fafb;
+            --gray: #6b7280;
+            --card-bg: rgba(30, 41, 59, 0.5);
+            --border: rgba(255, 255, 255, 0.1);
+            --gradient: linear-gradient(135deg, #7c3aed, #3b82f6, #10b981);
+            --gradient-reverse: linear-gradient(135deg, #10b981, #3b82f6, #7c3aed);
+        }
+
+        /* ===== RESET & BASE ===== */
+•	{
+            Margin: 0;
+            Padding: 0;
+            Box-sizing: border-box;
+        }
+
+        Body {
+            Background: var(--darker);
+            Color: var(--light);
+            Font-family: 'Inter', -apple-system, sans-serif;
+            Line-height: 1.6;
+            Min-height: 100vh;
+            Background-image: 
+                Radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.1) 0%, transparent 20%),
+                Radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 20%);
+        }
+
+        /* ===== LAYOUT ===== */
+        .container {
+            Max-width: 1400px;
+            Margin: 0 auto;
+            Padding: 0 20px;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            Background: rgba(17, 24, 39, 0.9);
+            Backdrop-filter: blur(10px);
+            Border-bottom: 1px solid var(--border);
+            Position: sticky;
+            Top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+        }
+
+        .nav {
+            Display: flex;
+            Justify-content: space-between;
+            Align-items: center;
+        }
+
+        .logo {
+            Font-size: 24px;
+            Font-weight: 800;
+            Background: var(--gradient);
+            -webkit-background-clip: text;
+            Background-clip: text;
+            Color: transparent;
+        }
+
+        .wallet-btn {
+            Background: var(--gradient);
+            Color: white;
+            Border: none;
+            Padding: 10px 20px;
+            Border-radius: 8px;
+            Font-weight: 600;
+            Cursor: pointer;
+            Display: flex;
+            Align-items: center;
+            Gap: 8px;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            Padding: 80px 0;
+            Text-align: center;
+        }
+
+        .hero h1 {
+            Font-size: 3.5rem;
+            Font-weight: 800;
+            Line-height: 1.1;
+            Margin-bottom: 20px;
+            Background: linear-gradient(to right, #fff 20%, var(--primary) 50%, var(--secondary) 80%);
+            -webkit-background-clip: text;
+            Background-clip: text;
+            Color: transparent;
+        }
+
+        .hero-subtitle {
+            Font-size: 1.2rem;
+            Color: var(--gray);
+            Max-width: 700px;
+            Margin: 0 auto 40px;
+        }
+
+        /* ===== DASHBOARD ===== */
+        .dashboard {
+            Display: grid;
+            Grid-template-columns: 300px 1fr;
+            Gap: 30px;
+            Min-height: 800px;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            Background: var(--card-bg);
+            Border-radius: 20px;
+            Padding: 30px;
+            Border: 1px solid var(--border);
+        }
+
+        .user-card {
+            Text-align: center;
+            Padding-bottom: 20px;
+            Border-bottom: 1px solid var(--border);
+            Margin-bottom: 20px;
+        }
+
+        .user-avatar {
+            Width: 80px;
+            Height: 80px;
+            Border-radius: 50%;
+            Background: var(--gradient);
+            Margin: 0 auto 15px;
+            Display: flex;
+            Align-items: center;
+            Justify-content: center;
+            Font-size: 32px;
+        }
+
+        .nav-menu {
+            List-style: none;
+        }
+
+        .nav-item {
+            Padding: 12px 15px;
+            Border-radius: 10px;
+            Margin-bottom: 8px;
+            Cursor: pointer;
+            Transition: all 0.3s;
+            Display: flex;
+            Align-items: center;
+            Gap: 10px;
+        }
+
+        .nav-item.active {
+            Background: rgba(124, 58, 237, 0.2);
+            Border-left: 3px solid var(--primary);
+        }
+
+        .nav-item:hover:not(.active) {
+            Background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            Background: var(--card-bg);
+            Border-radius: 20px;
+            Padding: 30px;
+            Border: 1px solid var(--border);
+        }
+
+        .tab-content {
+            Display: none;
+        }
+
+        .tab-content.active {
+            Display: block;
+        }
+
+        /* ===== MATCH CARDS ===== */
+        .matches-grid {
+            Display: grid;
+            Grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            Gap: 20px;
+            Margin-top: 30px;
+        }
+
+        .match-card {
+            Background: rgba(30, 41, 59, 0.7);
+            Border-radius: 15px;
+            Padding: 25px;
+            Border: 1px solid var(--border);
+            Transition: all 0.3s;
+            Position: relative;
+        }
+
+        .match-card:hover {
+            Border-color: var(--primary);
+            Transform: translateY(-5px);
+        }
+
+        .match-score {
+            Position: absolute;
+            Top: 15px;
+            Right: 15px;
+            Background: var(--gradient);
+            Color: white;
+            Padding: 5px 15px;
+            Border-radius: 20px;
+            Font-weight: 600;
+        }
+
+        .brand-logo {
+            Width: 60px;
+            Height: 60px;
+            Border-radius: 12px;
+            Background: var(--gradient);
+            Display: flex;
+            Align-items: center;
+            Justify-content: center;
+            Font-size: 24px;
+            Margin-bottom: 15px;
+        }
+
+        .deal-value {
+            Font-size: 1.5rem;
+            Font-weight: 700;
+            Color: var(--secondary);
+            Margin: 10px 0;
+        }
+
+        .contract-btn {
+            Background: var(--gradient);
+            Color: white;
+            Border: none;
+            Padding: 10px 20px;
+            Border-radius: 8px;
+            Font-weight: 600;
+            Cursor: pointer;
+            Width: 100%;
+            Margin-top: 15px;
+            Transition: all 0.3s;
+        }
+
+        .contract-btn:hover {
+            Opacity: 0.9;
+        }
+
+        /* ===== ANALYTICS ===== */
+        .analytics-grid {
+            Display: grid;
+            Grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            Gap: 20px;
+            Margin-top: 30px;
+        }
+
+        .metric-card {
+            Background: rgba(30, 41, 59, 0.7);
+            Border-radius: 15px;
+            Padding: 25px;
+            Text-align: center;
+            Border: 1px solid var(--border);
+        }
+
+        .metric-value {
+            Font-size: 2.5rem;
+            Font-weight: 800;
+            Background: var(--gradient);
+            -webkit-background-clip: text;
+            Background-clip: text;
+            Color: transparent;
+            Margin: 10px 0;
+        }
+
+        /* ===== SMART CONTRACT ===== */
+        .contract-viewer {
+            Background: rgba(30, 41, 59, 0.7);
+            Border-radius: 15px;
+            Padding: 25px;
+            Margin-top: 30px;
+            Border: 1px solid var(--border);
+            Font-family: 'Courier New', monospace;
+            Font-size: 0.9rem;
+            Line-height: 1.8;
+            Overflow-x: auto;
+        }
+
+        .contract-line {
+            Margin-bottom: 8px;
+        }
+
+        .contract-key {
+            Color: var(--primary);
+        }
+
+        .contract-value {
+            Color: var(--secondary);
+        }
+
+        /* ===== CHAT ===== */
+        .chat-container {
+            Display: grid;
+            Grid-template-columns: 300px 1fr;
+            Gap: 20px;
+            Height: 600px;
+            Margin-top: 30px;
+        }
+
+        .chat-list {
+            Background: rgba(30, 41, 59, 0.7);
+            Border-radius: 15px;
+            Padding: 20px;
+            Overflow-y: auto;
+            Border: 1px solid var(--border);
+        }
+
+        .chat-window {
+            Background: rgba(30, 41, 59, 0.7);
+            Border-radius: 15px;
+            Padding: 20px;
+            Display: flex;
+            Flex-direction: column;
+            Border: 1px solid var(--border);
+        }
+
+        .chat-messages {
+            Flex: 1;
+            Overflow-y: auto;
+            Margin-bottom: 20px;
+        }
+
+        .message {
+            Background: rgba(124, 58, 237, 0.2);
+            Padding: 12px 15px;
+            Border-radius: 10px;
+            Margin-bottom: 10px;
+            Max-width: 70%;
+        }
+
+        .message.brand {
+            Background: rgba(16, 185, 129, 0.2);
+            Margin-left: auto;
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
+            Display: none;
+            Position: fixed;
+            Top: 0;
+            Left: 0;
+            Width: 100%;
+            Height: 100%;
+            Background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            Background: var(--dark);
+            Border-radius: 20px;
+            Padding: 40px;
+            Max-width: 500px;
+            Width: 90%;
+            Border: 1px solid var(--border);
+            Position: relative;
+        }
+
+        .close-modal {
+            Position: absolute;
+            Top: 20px;
+            Right: 20px;
+            Background: none;
+            Border: none;
+            Color: var(--gray);
+            Font-size: 24px;
+            Cursor: pointer;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .dashboard {
+                Grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                Font-size: 2.5rem;
+            }
+            
+            .matches-grid {
+                Grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css>
+</head>
+<body>
+    <!—HEADER 
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <div class="logo">
+                    <I class="fas fa-robot"></i> TalentAI
+                </div>
+                <button class="wallet-btn" onclick='connectWallet()'>
+                    <I class="fas fa-wallet"></i>
+                    <span id="walletStatus">Connect Wallet</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!—HERO 
+    <section class="hero">
+        <div class="container">
+            <h1>Decentralized Talent Agency AI</h1>
+            <p class="hero-subtitle">
+                AI automatically finds you brand deals. Smart contracts handle payments.
+                No more 20% agency fees. Welcome to the future of creator monetization.
+            </p>
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
+                <button class="wallet-btn" style="padding: 15px 30px; font-size: 1.1rem;" onclick='showTab("creator")'>
+                    <I class="fas fa-user-circle"></i> I'm a Creator
+                </button>
+                <button class="wallet-btn" style="padding: 15px 30px; font-size: 1.1rem; background: var(--gradient-reverse);" onclick="showTab('brand')">
+                    <I class="fas fa-briefcase"></i> I'm a Brand
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!—MAIN DASHBOARD 
+    <section class="dashboard-section">
+        <div class="container">
+            <div class="dashboard">
+                <!—SIDEBAR 
+                <aside class="sidebar">
+                    <div class="user-card">
+                        <div class="user-avatar">
+                            <I class="fas fa-user"></i>
+                        </div>
+                        <h3 id="userName">Creator Name</h3>
+                        <p style="color: var(--gray); font-size: 0.9rem;" id="userHandle">@creator</p>
+                        <div style="margin-top: 15px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span>Earnings Potential</span>
+                                <span id="earningsPotential">$0</span>
+                            </div>
+                            <div style="height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px;">
+                                <div id="earningsBar" style="height: 100%; width: 0%; background: var(--gradient); border-radius: 3px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ul class="nav-menu">
+                        <li class="nav-item active" onclick="showTab('dashboard')">
+                            <I class="fas fa-home"></i> Dashboard
+                        </li>
+                        <li class="nav-item" onclick="showTab('matches')">
+                            <I class="fas fa-handshake"></i> AI Matches
+                            <span id="matchCount" style="margin-left: auto; background: var(--primary); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem;">0</span>
+                        </li>
+                        <li class="nav-item" onclick="showTab('analytics')">
+                            <I class="fas fa-chart-bar"></i> Analytics
+                        </li>
+                        <li class="nav-item" onclick="showTab('contracts')">
+                            <I class="fas fa-file-contract"></i> Smart Contracts
+                        </li>
+                        <li class="nav-item" onclick="showTab('chat')">
+                            <I class="fas fa-comments"></i> Brand Chat
+                            <span id="unreadCount" style="margin-left: auto; background: var(--secondary); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem;">0</span>
+                        </li>
+                        <li class="nav-item" onclick="showTab('earnings')">
+                            <I class="fas fa-money-bill-wave"></i> Earnings
+                        </li>
+                        <li class="nav-item" onclick="showTab('settings')">
+                            <I class="fas fa-cog"></i> Settings
+                        </li>
+                    </ul>
+                </aside>
+
+                <!—MAIN CONTENT 
+                <main class="main-content">
+                    <!—DASHBOARD TAB 
+                    <div id="dashboard-tab" class="tab-content active">
+                        <h2 style="margin-bottom: 20px;">Welcome Back, <span id="dashboardName">Creator</span></h2>
+                        <p style="color: var(--gray); margin-bottom: 30px;">
+                            Your AI agent has been analyzing 5,423 brands. Here are your best matches today.
+                        </p>
+
+                        <div class="analytics-grid">
+                            <div class="metric-card">
+                                <div class="metric-label">Active Matches</div>
+                                <div class="metric-value" id="activeMatches">12</div>
+                                <div style="color: var(--gray); font-size: 0.9rem;">Potential deals</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Total Value</div>
+                                <div class="metric-value" id="totalValue">$48.5K</div>
+                                <div style="color: var(--gray); font-size: 0.9rem;">This month</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">AI Match Score</div>
+                                <div class="metric-value" id="matchScore">94%</div>
+                                <div style="color: var(--gray); font-size: 0.9rem;">Accuracy rate</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Saved vs Agency</div>
+                                <div class="metric-value" id="savedFees">$9.7K</div>
+                                <div style="color: var(--gray); font-size: 0.9rem;">20% fees avoided</div>
+                            </div>
+                        </div>
+
+                        <h3 style="margin: 40px 0 20px;">Top AI Recommendations</h3>
+                        <div class="matches-grid" id="dashboardMatches">
+                            <!—AI matches will be inserted here 
+                        </div>
+                    </div>
+
+                    <!—MATCHES TAB 
+                    <div id="matches-tab" class="tab-content">
+                        <h2 style="margin-bottom: 20px;">AI-Generated Brand Matches</h2>
+                        <p style="color: var(--gray); margin-bottom: 30px;">
+                            These brands are actively looking for creators like you. AI match score shows compatibility.
+                        </p>
+                        <div class="matches-grid" id="matchesContainer">
+                            <!—Matches will be inserted here 
+                        </div>
+                    </div>
+
+                    <!—ANALYTICS TAB 
+                    <div id="analytics-tab" class="tab-content">
+                        <h2 style="margin-bottom: 20px;">Performance Analytics</h2>
+                        <p style="color: var(--gray); margin-bottom: 30px;">
+                            AI analysis of your content performance across platforms.
+                        </p>
+                        
+                        <div class="analytics-grid">
+                            <div class="metric-card">
+                                <div class="metric-label">Audience Match %</div>
+                                <div class="metric-value">87%</div>
+                                <div style="color: var(--gray); font-size: 0.9rem;">Brand alignment</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Content Score</div>
+                                <div class="metric-value">9.2/10</div>
+                                <div style="color: var(--gray); font-size: 0.9rem;">Quality rating</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Engagement Rate</div>
+                                <div class="metric-value">4.8%</div>
+                                <div style="color: var(--gray); font-size: 0.9rem;">Above average</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Best Platform</div>
+                                <div class="metric-value">YouTube</div>
+                                <div style="color: var(--gray); font-size: 0.9rem;">For brand deals</div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 40px;">
+                            <h3 style="margin-bottom: 20px;">Brand Compatibility Analysis</h3>
+                            <div style="background: rgba(30, 41, 59, 0.7); border-radius: 15px; padding: 25px; border: 1px solid var(--border);">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Tech Brands</span>
+                                    <span>92% match</span>
+                                </div>
+                                <div style="height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-bottom: 20px;">
+                                    <div style="height: 100%; width: 92%; background: var(--primary); border-radius: 5px;"></div>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Gaming Brands</span>
+                                    <span>85% match</span>
+                                </div>
+                                <div style="height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-bottom: 20px;">
+                                    <div style="height: 100%; width: 85%; background: var(--primary); border-radius: 5px;"></div>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <span>Fashion Brands</span>
+                                    <span>73% match</span>
+                                </div>
+                                <div style="height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-bottom: 20px;">
+                                    <div style="height: 100%; width: 73%; background: var(--primary); border-radius: 5px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!—CONTRACTS TAB 
+                    <div id="contracts-tab" class="tab-content">
+                        <h2 style="margin-bottom: 20px;">Smart Contract Dashboard</h2>
+                        <p style="color: var(--gray); margin-bottom: 30px;">
+                            All deals are executed via smart contracts. No intermediaries, instant payments.
+                        </p>
+
+                        <div class="contract-viewer">
+                            <div class="contract-line"><span class="contract-key">Contract Address:</span> <span class="contract-value" id="contractAddress">0x742d35Cc6634C0532925a3b844Bc9e</span></div>
+                            <div class="contract-line"><span class="contract-key">Creator:</span> <span class="contract-value" id="contractCreator">0xCreatorWallet</span></div>
+                            <div class="contract-line"><span class="contract-key">Brand:</span> <span class="contract-value" id="contractBrand">Nike Marketing DAO</span></div>
+                            <div class="contract-line"><span class="contract-key">Amount:</span> <span class="contract-value">$5,000 USDC</span></div>
+                            <div class="contract-line"><span class="contract-key">Deliverables:</span> <span class="contract-value">3 Instagram posts + 1 YouTube video</span></div>
+                            <div class="contract-line"><span class="contract-key">Timeline:</span> <span class="contract-value">30 days from signature</span></div>
+                            <div class="contract-line"><span class="contract-key">Payment Terms:</span> <span class="contract-value">50% upfront, 50% on completion</span></div>
+                            <div class="contract-line"><span class="contract-key">Escrow Agent:</span> <span class="contract-value">TalentAI Smart Contract v2.1</span></div>
+                            <div class="contract-line"><span class="contract-key">Status:</span> <span class="contract-value" style="color: var(--secondary);">● Funds in escrow</span></div>
+                        </div>
+
+                        <div style="display: flex; gap: 15px; margin-top: 30px;">
+                            <button class="contract-btn" onclick="signContract()">
+                                <I class="fas fa-signature"></i> Sign Contract
+                            </button>
+                            <button class="contract-btn" style="background: var(--gradient-reverse);" onclick="viewOnExplorer()">
+                                <I class="fas fa-external-link-alt"></i> View on Explorer
+                            </button>
+                        </div>
+                    </div>
+
+                    <!—CHAT TAB 
+                    <div id="chat-tab" class="tab-content">
+                        <h2 style="margin-bottom: 20px;">Brand Communications</h2>
+                        <p style="color: var(--gray); margin-bottom: 30px;">
+                            Secure, encrypted chat with potential brand partners.
+                        </p>
+
+                        <div class="chat-container">
+                            <div class="chat-list">
+                                <h4 style="margin-bottom: 15px;">Active Conversations</h4>
+                                <div class="chat-item" onclick="openChat('nike')" style="padding: 15px; border-radius: 10px; background: rgba(124, 58, 237, 0.2); margin-bottom: 10px; cursor: pointer;">
+                                    <div style="font-weight: 600;">Nike</div>
+                                    <div style="color: var(--gray); font-size: 0.9rem;">Last: 2 hours ago</div>
+                                </div>
+                                <div class="chat-item" onclick="openChat('apple')" style="padding: 15px; border-radius: 10px; background: rgba(255,255,255,0.05); margin-bottom: 10px; cursor: pointer;">
+                                    <div style="font-weight: 600;">Apple</div>
+                                    <div style="color: var(--gray); font-size: 0.9rem;">Last: 1 day ago</div>
+                                </div>
+                                <div class="chat-item" onclick="openChat('redbull')" style="padding: 15px; border-radius: 10px; background: rgba(255,255,255,0.05); margin-bottom: 10px; cursor: pointer;">
+                                    <div style="font-weight: 600;">Red Bull</div>
+                                    <div style="color: var(--gray); font-size: 0.9rem;">Last: 3 days ago</div>
+                                </div>
+                            </div>
+                            <div class="chat-window">
+                                <h4 id="chatBrand">Select a conversation</h4>
+                                <div class="chat-messages" id="chatMessages">
+                                    <!—Messages appear here 
+                                </div>
+                                <div style="display: flex; gap: 10px;">
+                                    <input type="text" id="messageInput" placeholder="Type your message…" style="flex: 1; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid var(--border); border-radius: 8px; color: white;">
+                                    <button class="contract-btn" onclick="sendMessage()" style="width: auto;">
+                                        <I class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!—EARNINGS TAB 
+                    <div id="earnings-tab" class="tab-content">
+                        <h2 style="margin-bottom: 20px;">Earnings Dashboard</h2>
+                        <p style="color: var(--gray); margin-bottom: 30px;">
+                            Real-time tracking of all payments via smart contracts.
+                        </p>
+
+                        <div class="analytics-grid">
+                            <div class="metric-card">
+                                <div class="metric-label">Total Earned</div>
+                                <div class="metric-value">$24.8K</div>
+                                <div style="color: var(--gray); font-size: 0.9rem;">All time</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">This Month</div>
+                                <div class="metric-value">$8.5K</div>
+                                <div style="color: var(--gray); font-size: 0.9rem;">+42% from last month</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Pending</div>
+                                <div class="metric-value">$12.3K</div>
+                                <div style="color: var(--gray); font-size: 0.9rem;">In escrow</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Fees Saved</div>
+                                <div class="metric-value">$5.0K</div>
+                                <div style="color: var(--gray); font-size: 0.9rem;">No agency commission</div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 40px;">
+                            <h3 style="margin-bottom: 20px;">Recent Transactions</h3>
+                            <div style="background: rgba(30, 41, 59, 0.7); border-radius: 15px; padding: 25px; border: 1px solid var(--border);">
+                                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 20px; padding: 15px 0; border-bottom: 1px solid var(--border);">
+                                    <div>Brand</div>
+                                    <div>Amount</div>
+                                    <div>Date</div>
+                                    <div>Status</div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 20px; padding: 15px 0; border-bottom: 1px solid var(--border);">
+                                    <div>Nike</div>
+                                    <div>$5,000</div>
+                                    <div>Dec 5, 2024</div>
+                                    <div style="color: var(--secondary);">● Completed</div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 20px; padding: 15px 0; border-bottom: 1px solid var(--border);">
+                                    <div>Apple</div>
+                                    <div>$3,500</div>
+                                    <div>Dec 2, 2024</div>
+                                    <div style="color: var(--secondary);">● Completed</div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 20px; padding: 15px 0;">
+                                    <div>Red Bull</div>
+                                    <div>$8,000</div>
+                                    <div>In progress</div>
+                                    <div style="color: var(--warning);">● Escrow</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!—SETTINGS TAB 
+                    <div id="settings-tab" class="tab-content">
+                        <h2 style="margin-bottom: 20px;">AI Settings</h2>
+                        <p style="color: var(--gray); margin-bottom: 30px;">
+                            Configure your AI agent to find perfect brand matches.
+                        </p>
+
+                        <div style="background: rgba(30, 41, 59, 0.7); border-radius: 15px; padding: 30px; border: 1px solid var(--border);">
+                            <div style="margin-bottom: 25px;">
+                                <label style="display: block; margin-bottom: 10px; font-weight: 600;">Minimum Deal Size</label>
+                                <input type="range" min="500" max="50000" value="5000" class="slider" id="minDeal" style="width: 100%;">
+                                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                                    <span>$500</span>
+                                    <span id="minDealValue">$5,000</span>
+                                    <span>$50,000</span>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 25px;">
+                                <label style="display: block; margin-bottom: 10px; font-weight: 600;">Brand Categories</label>
+                                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox" checked> Technology
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox" checked> Gaming
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox"> Fashion
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox" checked> Food & Beverage
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox"> Automotive
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 25px;">
+                                <label style="display: block; margin-bottom: 10px; font-weight: 600;">Content Requirements</label>
+                                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox" checked> Video Content
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox" checked> Social Media Posts
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox"> Live Streaming
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox"> Podcast Appearances
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button class="contract-btn" onclick="saveSettings()">
+                                <I class="fas fa-save"></i> Save AI Settings
+                            </button>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <!—MODAL 
+    <div id="dealModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">×</button>
+            <h2 id="modalTitle">Deal Details</h2>
+            <div id="modalContent">
+                <!—Modal content appears here 
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== STATE MANAGEMENT =====
+        let userData = {
+            Name: "Alex Johnson",
+            Handle: "@techcreator",
+            walletConnected: false,
+            earningsPotential: 12500,
+            activeDeals: []
+        };
+
+        let brandMatches = [
+            {
+                Id: 1,
+                Brand: "Nike",
+                Logo: "👟",
+                Match: 94,
+                Value: 5000,
+                Description: "3 Instagram posts showcasing new running shoes",
+                Category: "Fashion & Sports",
+                Timeline: "30 days",
+                audienceMatch: "92%",
+                aiNotes: "Perfect match – your audience is 35% runners"
+            },
+            {
+                Id: 2,
+                Brand: "Apple",
+                Logo: "🍎",
+                Match: 88,
+                Value: 3500,
+                Description: "YouTube review of new MacBook Pro",
+                Category: "Technology",
+                Timeline: "14 days",
+                audienceMatch: "87%",
+                aiNotes: "Your tech tutorials perform exceptionally well"
+            },
+            {
+                Id: 3,
+                Brand: "Red Bull",
+                Logo: "🐂",
+                Match: 82,
+                Value: 8000,
+                Description: "Extreme sports event coverage + social media",
+                Category: "Energy & Sports",
+                Timeline: "60 days",
+                audienceMatch: "78%",
+                aiNotes: "Your adventure content aligns with brand image"
+            },
+            {
+                Id: 4,
+                Brand: "Adobe",
+                Logo: "🎨",
+                Match: 91,
+                Value: 4500,
+                Description: "Creative software tutorial series",
+                Category: "Technology",
+                Timeline: "45 days",
+                audienceMatch: "89%",
+                aiNotes: "Your design content gets high engagement"
+            },
+            {
+                Id: 5,
+                Brand: "Ray-Ban",
+                Logo: "😎",
+                Match: 79,
+                Value: 6000,
+                Description: "Summer fashion campaign",
+                Category: "Fashion",
+                Timeline: "20 days",
+                audienceMatch: "74%",
+                aiNotes: "Good lifestyle brand fit"
+            },
+            {
+                Id: 6,
+                Brand: "Spotify",
+                Logo: "🎵",
+                Match: 85,
+                Value: 3000,
+                Description: "Playlist curation + social promotion",
+                Category: "Music & Audio",
+                Timeline: "15 days",
+                audienceMatch: "83%",
+                aiNotes: "Your content often features music"
+            }
+        ];
+
+        // ===== INITIALIZATION =====
+        Document.addEventListener('DOMContentLoaded', function() {
+            updateUI();
+            loadMatches();
+            updateChat();
+            setupEventListeners();
+        });
+
+        // ===== UI FUNCTIONS =====
+        function updateUI() {
+            Document.getElementById('userName').textContent = userData.name;
+            Document.getElementById('userHandle').textContent = userData.handle;
+            Document.getElementById('dashboardName').textContent = userData.name;
+            Document.getElementById('matchCount').textContent = brandMatches.length;
+            Document.getElementById('earningsPotential').textContent = '$' + userData.earningsPotential.toLocaleString();
+            Document.getElementById('earningsBar').style.width = '75%';
+            Document.getElementById('activeMatches').textContent = brandMatches.length;
+            Document.getElementById('totalValue').textContent = '$' + brandMatches.reduce((sum, match) => sum + match.value, 0).toLocaleString().split('.')[0] + 'K';
+            Document.getElementById('savedFees').textContent = '$' + Math.round(brandMatches.reduce((sum, match) => sum + match.value, 0) * 0.2).toLocaleString().split('.')[0] + 'K';
+        }
+
+        function loadMatches() {
+            const matchesContainer = document.getElementById('matchesContainer');
+            const dashboardMatches = document.getElementById('dashboardMatches');
+            
+            matchesContainer.innerHTML = '';
+            dashboardMatches.innerHTML = '';
+            
+            // Sort by match score (highest first)
+            const sortedMatches = [...brandMatches].sort((a, b) => b.match - a.match);
+            
+            sortedMatches.forEach(match => {
+                const matchCard = createMatchCard(match);
+                matchesContainer.appendChild(matchCard.cloneNode(true));
+                
+                // Only show top 3 in dashboard
+                if (sortedMatches.indexOf(match) < 3) {
+                    dashboardMatches.appendChild(matchCard.cloneNode(true));
+                }
+            });
+        }
+
+        function createMatchCard(match) {
+            const div = document.createElement('div');
+            div.className = 'match-card';
+            div.innerHTML = `
+                <div class="match-score">${match.match}% match</div>
+                <div class="brand-logo">${match.logo}</div>
+                <h3 style="margin-bottom: 5px;">${match.brand}</h3>
+                <div style="color: var(--gray); font-size: 0.9rem; margin-bottom: 10px;">${match.category}</div>
+                <p style="margin-bottom: 15px; font-size: 0.95rem;">${match.description}</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div class="deal-value">$${match.value.toLocaleString()}</div>
+                        <div style="color: var(--gray); font-size: 0.9rem;">${match.timeline}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.9rem;">Audience match</div>
+                        <div style="color: var(--secondary); font-weight: 600;">${match.audienceMatch}</div>
+                    </div>
+                </div>
+                <button class="contract-btn" onclick="viewDeal(${match.id})">
+                    <I class="fas fa-handshake"></i> View Deal Details
+                </button>
+            `;
+            return div;
+        }
+
+        // ===== TAB NAVIGATION =====
+        function showTab(tabName) {
+            // Hide all tabs
+            Document.querySelectorAll('.tab-content').forEach(tab => {
+                Tab.classList.remove('active');
+            });
+            
+            // Remove active class from all nav items
+            Document.querySelectorAll('.nav-item').forEach(item => {
+                Item.classList.remove('active');
+            });
+            
+            // Show selected tab
+            Document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Activate corresponding nav item
+            const navItem = Array.from(document.querySelectorAll('.nav-item')).find(item => 
+                Item.textContent.toLowerCase().includes(tabName)
+            );
+            if (navItem) navItem.classList.add('active');
+            
+            // Special handling for brand/creator mode
+            if (tabName === 'creator' || tabName === 'brand') {
+                const title = tabName === 'creator' ? 'Creator Dashboard' : 'Brand Dashboard';
+                Document.querySelector('.hero h1').textContent = title;
+                userData.name = tabName === 'creator' ? 'Alex Johnson' : 'Marketing Director';
+                userData.handle = tabName === 'creator' ? '@techcreator' : '@nike_marketing';
+                updateUI();
+                loadMatches();
+            }
+        }
+
+        // ===== MODAL FUNCTIONS =====
+        function viewDeal(matchId) {
+            const match = brandMatches.find(m => m.id === matchId);
+            if (!match) return;
+            
+            Document.getElementById('modalTitle').textContent = `${match.brand} Deal`;
+            Document.getElementById('modalContent').innerHTML = `
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                    <div style="width: 60px; height: 60px; border-radius: 12px; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-size: 28px;">
+                        ${match.logo}
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 5px;">${match.brand}</h3>
+                        <div style="color: var(--gray);">${match.category}</div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(124, 58, 237, 0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div>
+                            <div style="color: var(--gray); font-size: 0.9rem;">Deal Value</div>
+                            <div style="font-size: 1.8rem; font-weight: 700; color: var(--secondary);">$${match.value.toLocaleString()}</div>
+                        </div>
+                        <div>
+                            <div style="color: var(--gray); font-size: 0.9rem;">AI Match Score</div>
+                            <div style="font-size: 1.8rem; font-weight: 700; color: var(--primary);">${match.match}%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 25px;">
+                    <h4 style="margin-bottom: 10px;">AI Analysis</h4>
+                    <p style="color: var(--gray);">${match.aiNotes}</p>
+                </div>
+                
+                <div style="margin-bottom: 25px;">
+                    <h4 style="margin-bottom: 10px;">Requirements</h4>
+                    <p>${match.description}</p>
+                    <div style="color: var(--gray); margin-top: 5px;">Timeline: ${match.timeline}</div>
+                </div>
+                
+                <div style="display: flex; gap: 15px;">
+                    <button class="contract-btn" onclick="acceptDeal(${matchId})" style="flex: 1;">
+                        <I class="fas fa-check-circle"></i> Accept Deal
+                    </button>
+                    <button class="contract-btn" onclick="negotiateDeal(${matchId})" style="flex: 1; background: var(--gradient-reverse);">
+                        <I class="fas fa-comments"></i> Negotiate
+                    </button>
+                </div>
+            `;
+            
+            Document.getElementById('dealModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            Document.getElementById('dealModal').style.display = 'none';
+        }
+
+        // ===== BUSINESS LOGIC =====
+        function connectWallet() {
+            userData.walletConnected = !userData.walletConnected;
+            const walletStatus = document.getElementById('walletStatus');
+            walletStatus.textContent = userData.walletConnected ? 'Connected ✓' : 'Connect Wallet';
+            
+            if (userData.walletConnected) {
+                showNotification('Wallet connected successfully!', 'success');
+                document.getElementById('contractAddress').textContent = '0x' + Array.from({length: 40}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+                document.getElementById('contractCreator').textContent = '0x' + Array.from({length: 40}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+            }
+        }
+
+        function acceptDeal(matchId) {
+            const match = brandMatches.find(m => m.id === matchId);
+            if (!userData.walletConnected) {
+                showNotification('Please connect your wallet first', 'error');
+                return;
+            }
+            
+            closeModal();
+            showNotification(`Deal with ${match.brand} accepted! Smart contract deployed.`, 'success');
+            
+            // Add to active deals
+            userData.activeDeals.push(match);
+            updateUI();
+        }
+
+        function negotiateDeal(matchId) {
+            const match = brandMatches.find(m => m.id === matchId);
+            closeModal();
+            showTab('chat');
+            openChat(match.brand.toLowerCase());
+            showNotification(`Chat opened with ${match.brand}. Start negotiating!`, 'info');
+        }
+
+        function signContract() {
+            if (!userData.walletConnected) {
+                showNotification('Connect wallet to sign contract', 'error');
+                return;
+            }
+            
+            showNotification('Contract signed! Funds released from escrow.', 'success');
+            document.querySelector('.contract-value[style*="Escrow"]').textContent = '● Signed & Paid';
+            document.querySelector('.contract-value[style*="Escrow"]').style.color = 'var(--secondary)';
+        }
+
+        // ===== CHAT FUNCTIONS =====
+        function updateChat() {
+            Document.getElementById('unreadCount').textContent = '3';
+        }
+
+        function openChat(brand) {
+            const brandName = brand.charAt(0).toUpperCase() + brand.slice(1);
+            Document.getElementById('chatBrand').textContent = brandName;
+            
+            const messages = document.getElementById('chatMessages');
+            Messages.innerHTML = '';
+            
+            // Sample conversation
+            const conversation = brand === 'nike' ? [
+                { sender: 'brand', text: 'Hi! We love your content and think you\'d be perfect for our new running shoe campaign.' },
+                { sender: 'user', text: 'Thanks! I\'m definitely interested. Can you share more details?' },
+                { sender: 'brand', text: 'We\'re looking for 3 Instagram posts showcasing the shoes in action. Budget is $5,000.' },
+                { sender: 'user', text: 'That works for me. I can deliver within 30 days. Can we use a smart contract?' },
+                { sender: 'brand', text: 'Absolutely! That\'s why we use TalentAI. I\'ll send the contract now.' }
+            ] : [
+                { sender: 'brand', text: `Hello from ${brandName}! We're interested in working with you.` },
+                { sender: 'user', text: 'Great to hear! What did you have in mind?' }
+            ];
+            
+            Conversation.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = `message ${msg.sender === 'brand' ? 'brand' : ''}`;
+                div.textContent = msg.text;
+                messages.appendChild(div);
+            });
+            
+            Messages.scrollTop = messages.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            const messages = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = 'message';
+            div.textContent = message;
+            messages.appendChild(div);
+            
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+            
+            // Simulate AI response after 1 second
+            setTimeout(() => {
+                const responses = [
+                    "That sounds good! We can definitely work with that.",
+                    "Let me check with our team and get back to you.",
+                    "Perfect! I'll prepare the smart contract.",
+                    "Would you be open to discussing the timeline?"
+                ];
+                const aiDiv = document.createElement('div');
+                aiDiv.className = 'message brand';
+                aiDiv.textContent = responses[Math.floor(Math.random() * responses.length)];
+                messages.appendChild(aiDiv);
+                messages.scrollTop = messages.scrollHeight;
+            }, 1000);
+        }
+
+        // ===== UTILITY FUNCTIONS =====
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            Notification.style.cssText = `
+                Position: fixed;
+                Top: 20px;
+                Right: 20px;
+                Background: ${type === 'success' ? 'var(--secondary)' : type === 'error' ? 'var(--danger)' : 'var(--primary)'};
+                Color: white;
+                Padding: 15px 25px;
+                Border-radius: 10px;
+                z-index: 3000;
+                animation: slideIn 0.3s ease;
+                font-weight: 600;
+            `;
+            Notification.textContent = message;
+            Document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        function setupEventListeners() {
+            // Min deal slider
+            const minDealSlider = document.getElementById('minDeal');
+            const minDealValue = document.getElementById('minDealValue');
+            
+            minDealSlider.addEventListener('input', function() {
+                minDealValue.textContent = '$' + parseInt(this.value).toLocaleString();
+            });
+            
+            // Close modal on outside click
+            Document.getElementById('dealModal').addEventListener('click', function€ {
+                if (e.target === this) closeModal();
+            });
+            
+            // Close on ESC
+            Document.addEventListener('keydown', function€ {
+                if (e.key === 'Escape') closeModal();
+            });
+        }
+
+        // ===== ADD CSS ANIMATIONS =====
+        const style = document.createElement('style');
+        Style.textContent = `
+            @keyframes slideIn {
+                From {
+                    Transform: translateX(100%);
+                    Opacity: 0;
+                }
+                To {
+                    Transform: translateX(0);
+                    Opacity: 1;
+                }
+            }
+            
+            @keyframes slideOut {
+                From {
+                    Transform: translateX(0);
+                    Opacity: 1;
+                }
+                To {
+                    Transform: translateX(100%);
+                    Opacity: 0;
+                }
+            }
+            
+            .slider {
+                -webkit-appearance: none;
+                Height: 8px;
+                Background: linear-gradient(90deg, var(--primary), var(--secondary));
+                Border-radius: 4px;
+                Outline: none;
+            }
+            
+            .slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                Width: 20px;
+                Height: 20px;
+                Border-radius: 50%;
+                Background: white;
+                Cursor: pointer;
+                Border: 2px solid var(--primary);
+            }
+        `;
+        Document.head.appendChild(style);
+    </script>
+</body>
+</html>
